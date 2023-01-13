@@ -1,0 +1,14 @@
+select, input, textarea {
+  margin: 10px;
+  padding: 8px 10px;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 0;
+}
+
+button {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  cursor: pointer;
+}
