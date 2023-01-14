@@ -1,24 +1,14 @@
-const DefinePlugin = require('webpack/lib/DefinePlugin');
+const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const deps = require("./package.json").dependencies;
 
 require('dotenv').config();
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   output: {
-    publicPath: 'http://localhost:3102/',
+    filename: "[contenthash].js",
     clean: true
-  },
-  optimization: {
-    minimize: false
-  },
-  devServer: {
-    port: 3102,
-    hot: true,
-    historyApiFallback: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
   },
   module: {
     rules: [
@@ -46,18 +36,23 @@ module.exports = {
           "css-loader",
           "sass-loader"
         ],
-      },
-      {
-        test: /\.(jpg|png|gif|jpeg|jfif)$/,
-        type: 'asset/resource'
       }
     ]
   },
   plugins: [
+    new ModuleFederationPlugin({
+      name: "diffusion",
+      filename: "remoteEntry.js",
+      exposes: {
+        './bootstrap': './src/bootstrap'
+      },
+      shared: {
+        ...deps
+      },
+    }),
     new HtmlWebpackPlugin({
-      title: 'Hot Module Replacement',
       template: "./src/index.html"
-    })
+    }),
   ],
   resolve: {
     modules: [
